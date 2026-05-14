@@ -1,0 +1,33 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* ── Admin Panel Global Overrides ── */
+
+/* Custom scrollbar for the cyberpunk theme */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 217, 255, 0.03);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 217, 255, 0.25);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 217, 255, 0.5);
+}
+
+/* Pulse glow animation */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Scan line effect (optional overlay) */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
