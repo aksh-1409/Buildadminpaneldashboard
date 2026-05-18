@@ -11,17 +11,18 @@ import {
   getBranchSummaries,
 } from "../data/mockData";
 import StudentListModal from "./StudentListModal";
+import BentoCard from "./BentoCard";
 
 const FONT = "'Inter', 'Segoe UI', system-ui, sans-serif";
 
 const C = {
-  bg: "#0d1117",
-  card: "#131929",
-  cardBorder: "rgba(255,255,255,0.08)",
-  cardBorderHover: "rgba(255,255,255,0.18)",
+  bg: "#0a0e27",
+  card: "#0f1430",
+  cardBorder: "rgba(0,217,255,0.10)",
+  cardBorderHover: "rgba(0,217,255,0.45)",
   cyan: "#00d9ff",
-  cyanDim: "rgba(0,217,255,0.1)",
-  teal: "#0097a7",
+  cyanDim: "rgba(0,217,255,0.12)",
+  teal: "#00d9ff",
   textPrimary: "#e2e8f0",
   textMuted: "#64748b",
   inputBg: "rgba(255,255,255,0.04)",
@@ -240,21 +241,8 @@ export default function Dashboard() {
   };
 
   const StatCard = ({ id, label, value, icon: Icon, color, subLabel, onClick }: any) => {
-    const hov = hoveredCard === id;
     return (
-      <div
-        onClick={onClick}
-        onMouseEnter={() => setHoveredCard(id)}
-        onMouseLeave={() => setHoveredCard(null)}
-        style={{
-          background: hov ? "#1a2035" : C.card,
-          border: `1px solid ${hov ? C.cardBorderHover : C.cardBorder}`,
-          borderRadius: 10,
-          padding: "18px 20px",
-          cursor: onClick ? "pointer" : "default",
-          transition: "all 0.2s",
-        }}
-      >
+      <BentoCard onClick={onClick} accent={color || C.cyan} style={{ padding: "18px 20px" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
           <div>
             <p style={{ color: C.textMuted, fontSize: 12, margin: "0 0 10px", fontFamily: FONT }}>{label}</p>
@@ -269,7 +257,7 @@ export default function Dashboard() {
             <Icon size={17} color={color || C.cyan} />
           </div>
         </div>
-      </div>
+      </BentoCard>
     );
   };
 
@@ -433,12 +421,7 @@ export default function Dashboard() {
       {/* Charts Row */}
       <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 14, marginBottom: 20 }}>
         {/* Line Chart */}
-        <div style={{
-          background: C.card,
-          border: `1px solid ${C.cardBorder}`,
-          borderRadius: 10,
-          padding: "18px 16px",
-        }}>
+        <BentoCard style={{ padding: "18px 16px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
             <p style={{ color: C.textPrimary, fontSize: 14, fontWeight: 500, margin: 0, fontFamily: FONT }}>
               Attendance Trend
@@ -479,16 +462,10 @@ export default function Dashboard() {
               ))}
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </BentoCard>
 
         {/* Pie Chart */}
-        <div style={{
-          background: C.card,
-          border: `1px solid ${C.cardBorder}`,
-          borderRadius: 10,
-          padding: "18px 16px",
-          display: "flex", flexDirection: "column",
-        }}>
+        <BentoCard style={{ padding: "18px 16px", display: "flex", flexDirection: "column" }}>
           <p style={{ color: C.textPrimary, fontSize: 14, fontWeight: 500, margin: "0 0 8px", fontFamily: FONT }}>
             Attendance Distribution
           </p>
@@ -518,7 +495,7 @@ export default function Dashboard() {
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </BentoCard>
       </div>
 
       {/* Branch Details */}
@@ -552,30 +529,15 @@ export default function Dashboard() {
 }
 
 function BranchCard({ branch: br, onViewStudents }: { branch: any; onViewStudents: () => void }) {
-  const [hov, setHov] = useState(false);
   const avg = br.avgAttendance;
   const color = avg >= 75 ? C.green : avg >= 60 ? C.cyan : C.orange;
 
   return (
-    <div
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      onClick={onViewStudents}
-      style={{
-        background: hov ? "#1a2035" : C.card,
-        border: `1px solid ${hov ? C.cardBorderHover : C.cardBorder}`,
-        borderRadius: 10, padding: "16px 18px",
-        cursor: "pointer",
-        transition: "all 0.2s",
-        position: "relative" as const,
-        overflow: "hidden",
-      }}
-    >
+    <BentoCard onClick={onViewStudents} accent={color} style={{ padding: "16px 18px" }}>
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, height: 2,
         background: color,
-        opacity: hov ? 0.8 : 0.35,
-        transition: "opacity 0.2s",
+        opacity: 0.55,
       }} />
 
       <p style={{ color: C.textPrimary, fontSize: 16, fontWeight: 600, fontFamily: FONT, letterSpacing: 0.5, margin: "0 0 12px" }}>{br.name}</p>
@@ -604,6 +566,6 @@ function BranchCard({ branch: br, onViewStudents }: { branch: any; onViewStudent
           <span style={{ color: C.red, fontSize: 11, fontFamily: FONT }}>↓{br.below30} risk</span>
         </div>
       </div>
-    </div>
+    </BentoCard>
   );
 }
