@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { ChevronDown, Search, Users, TrendingUp, TrendingDown, Activity, BarChart2 } from "lucide-react";
+import { ChevronDown, Search, Users, TrendingUp, TrendingDown, Activity, BarChart2, Mail, AlertTriangle, Star } from "lucide-react";
+import BulkEmailModal from "./BulkEmailModal";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
@@ -132,6 +133,7 @@ export default function Dashboard() {
   const [modalThreshold, setModalThreshold] = useState("ALL STUDENTS");
   const [modalBranch, setModalBranch] = useState("ALL BRANCHES");
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [bulkEmailMode, setBulkEmailMode] = useState<"at-risk" | "good-attendance" | null>(null);
   const [specificDate, setSpecificDate] = useState(() => new Date().toISOString().split("T")[0]);
   const [specificMonth, setSpecificMonth] = useState(MONTHS[0]);
   const [specificWeek, setSpecificWeek] = useState(1);
@@ -515,6 +517,145 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Bulk Email Section */}
+      <div style={{ marginTop: 20 }}>
+        <p style={{
+          color: C.textPrimary, fontSize: 14, fontWeight: 500,
+          margin: "0 0 14px", fontFamily: FONT,
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <Mail size={15} color={C.teal} />
+          Bulk Email Notifications
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          {/* At-Risk Email Card */}
+          <BentoCard
+            accent={C.orange}
+            style={{ padding: "20px 22px", cursor: "pointer" }}
+            onClick={() => setBulkEmailMode("at-risk")}
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{
+                  width: 38, height: 38, borderRadius: 10,
+                  background: "rgba(245,158,11,0.12)",
+                  border: "1px solid rgba(245,158,11,0.25)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  flexShrink: 0,
+                }}>
+                  <AlertTriangle size={17} color={C.orange} />
+                </div>
+                <div>
+                  <p style={{ color: C.textPrimary, fontSize: 13, fontWeight: 600, margin: 0, fontFamily: FONT }}>
+                    Email At-Risk Students
+                  </p>
+                  <p style={{ color: C.textMuted, fontSize: 11, margin: "3px 0 0", fontFamily: FONT }}>
+                    Attendance below 60%
+                  </p>
+                </div>
+              </div>
+              <span style={{
+                background: "rgba(245,158,11,0.12)",
+                border: "1px solid rgba(245,158,11,0.28)",
+                color: C.orange,
+                fontSize: 11, fontWeight: 600, fontFamily: FONT,
+                padding: "3px 9px", borderRadius: 10,
+                flexShrink: 0,
+              }}>
+                {filteredStudents.filter(s => s.percentage < 60).length} students
+              </span>
+            </div>
+            <p style={{ color: C.textMuted, fontSize: 12, fontFamily: FONT, margin: "0 0 16px", lineHeight: 1.55 }}>
+              Send attendance warnings, reminders, or support messages to students who are at risk of being detained.
+            </p>
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "flex-end",
+            }}>
+              <button
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "8px 16px",
+                  background: "rgba(245,158,11,0.15)",
+                  border: "1px solid rgba(245,158,11,0.35)",
+                  borderRadius: 7,
+                  color: C.orange,
+                  fontSize: 12, fontWeight: 500, fontFamily: FONT,
+                  cursor: "pointer",
+                  transition: "all 0.15s",
+                  pointerEvents: "none",
+                }}
+              >
+                <Mail size={12} />
+                Compose & Send
+              </button>
+            </div>
+          </BentoCard>
+
+          {/* Good Attendance Email Card */}
+          <BentoCard
+            accent={C.green}
+            style={{ padding: "20px 22px", cursor: "pointer" }}
+            onClick={() => setBulkEmailMode("good-attendance")}
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{
+                  width: 38, height: 38, borderRadius: 10,
+                  background: "rgba(34,197,94,0.12)",
+                  border: "1px solid rgba(34,197,94,0.25)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  flexShrink: 0,
+                }}>
+                  <Star size={17} color={C.green} />
+                </div>
+                <div>
+                  <p style={{ color: C.textPrimary, fontSize: 13, fontWeight: 600, margin: 0, fontFamily: FONT }}>
+                    Email High Performers
+                  </p>
+                  <p style={{ color: C.textMuted, fontSize: 11, margin: "3px 0 0", fontFamily: FONT }}>
+                    Attendance 75% and above
+                  </p>
+                </div>
+              </div>
+              <span style={{
+                background: "rgba(34,197,94,0.12)",
+                border: "1px solid rgba(34,197,94,0.28)",
+                color: C.green,
+                fontSize: 11, fontWeight: 600, fontFamily: FONT,
+                padding: "3px 9px", borderRadius: 10,
+                flexShrink: 0,
+              }}>
+                {filteredStudents.filter(s => s.percentage >= 75).length} students
+              </span>
+            </div>
+            <p style={{ color: C.textMuted, fontSize: 12, fontFamily: FONT, margin: "0 0 16px", lineHeight: 1.55 }}>
+              Appreciate and motivate students maintaining excellent attendance with personalised recognition emails.
+            </p>
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "flex-end",
+            }}>
+              <button
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "8px 16px",
+                  background: "rgba(34,197,94,0.12)",
+                  border: "1px solid rgba(34,197,94,0.32)",
+                  borderRadius: 7,
+                  color: C.green,
+                  fontSize: 12, fontWeight: 500, fontFamily: FONT,
+                  cursor: "pointer",
+                  transition: "all 0.15s",
+                  pointerEvents: "none",
+                }}
+              >
+                <Mail size={12} />
+                Compose & Send
+              </button>
+            </div>
+          </BentoCard>
+        </div>
+      </div>
+
       {modalOpen && (
         <StudentListModal
           open={modalOpen}
@@ -522,6 +663,14 @@ export default function Dashboard() {
           initialThreshold={modalThreshold}
           initialBranch={modalBranch}
           semester={semester}
+        />
+      )}
+
+      {bulkEmailMode && (
+        <BulkEmailModal
+          open={true}
+          onClose={() => setBulkEmailMode(null)}
+          mode={bulkEmailMode}
         />
       )}
     </div>
